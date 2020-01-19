@@ -24,6 +24,21 @@ RUN perl -p -i -e 's|#allow-interfaces=eth0|allow-interfaces=wlp2s0,wlp2s1|g' /e
 ENV NVIDIA_VISIBLE_DEVICES ${NVIDIA_VISIBLE_DEVICES:-all}
 ENV NVIDIA_DRIVER_CAPABILITIES ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
 
+# Install Pip
+RUN apt-get update && apt-get install -y \
+    python-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Scipy Requirements
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libc-dev \
+    && rm -rf /var/lib/apt/lists/* && \
+    pip install -U pip
+
+# Install Scipy
+RUN pip install scipy
+
 # ---------------------------- DEBUG -start ------------------------------ #
 # Install: ping, locate, nano, x11-apps (xclock)
 RUN apt-get update && apt-get install -y \
@@ -54,6 +69,8 @@ ARG GIT_EMAIL=
 RUN git config --global user.email "$GIT_EMAIL" && \
     git config --global user.name "$GIT_NAME"
 
+# Append source line to bashrc
+RUN echo "source /test_ros_entrypoint.sh" >> ~/.bashrc
 COPY ./test_ros_entrypoint.sh /
 
 ENTRYPOINT ["/test_ros_entrypoint.sh"]
