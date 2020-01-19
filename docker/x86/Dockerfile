@@ -36,8 +36,17 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* && \
     pip install -U pip
 
-# Install Scipy
-RUN pip install scipy
+# Install Python Dependencies (Scipy, Matplotlib)
+RUN pip install \
+    scipy \
+    matplotlib
+
+# Install Matplotlib Backend
+RUN apt-get update && apt-get install -y \
+    python-tk \
+    tcl-dev \
+    tk-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # ---------------------------- DEBUG -start ------------------------------ #
 # Install: ping, locate, nano, x11-apps (xclock)
