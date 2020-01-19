@@ -9,7 +9,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 # plots
 import matplotlib
-matplotlib.use('Agg')  ## This is needed for the gui to work from a virtual container
+# matplotlib.use('Agg')  ## This is needed for the gui to work from a virtual container
 import matplotlib.pyplot as plt
 # ros
 import rospy
@@ -26,23 +26,24 @@ class plot_6dof:
         rospy.init_node('plot_6dof_node', anonymous=True)
         self.fig = None
         self.axes = None
-        self.t_est = []
-        self.t_gt = []
-        self.x_est = []
-        self.x_gt = []
-        self.y_est = []
-        self.y_gt = []
-        self.z_est = []
-        self.z_gt = []
-        self.roll_est = []
-        self.roll_gt = []
-        self.pitch_est = []
-        self.pitch_gt = []
-        self.yaw_est = []
-        self.yaw_gt = []
+        self.t_est = [1]
+        self.t_gt = [1]
+        self.x_est = [1]
+        self.x_gt = [2]
+        self.y_est = [1]
+        self.y_gt = [2]
+        self.z_est = [1]
+        self.z_gt = [2]
+        self.roll_est = [1]
+        self.roll_gt = [2]
+        self.pitch_est = [1]
+        self.pitch_gt = [2]
+        self.yaw_est = [1]
+        self.yaw_gt = [2]
         self.tracked_quad_ns = rospy.get_param('~tracked_quad_ns')
         rospy.Subscriber(self.tracked_quad_ns + '/msl_raptor_state', PoseStamped, self.ado_pose_cb, queue_size=10)  # msl-raptor estimate of pose
         rospy.Subscriber(self.tracked_quad_ns + '/mavros/vision_pose/pose', PoseStamped, self.ado_pose_gt_cb, queue_size=10)  # optitrack gt pose
+        print(matplotlib.get_backend())
         self.init_plot()
 
 
@@ -99,7 +100,7 @@ class plot_6dof:
         self.fig, self.axes = plt.subplots(3, 2, clear=True)  # sharex=True,
         est_line_style = 'r-'
         gt_line_style = 'b-'
-        self.x_gt_plt, = self.axes[0,0].plot(0, 0, gt_line_style)
+        self.x_gt_plt, = self.axes[0,0].plot([0, 1], [2, 4], gt_line_style)
         self.x_est_plt, = self.axes[0,0].plot(0, 0, est_line_style)
         self.y_gt_plt, = self.axes[1,0].plot(0, 0, gt_line_style)
         self.y_est_plt, = self.axes[1,0].plot(0, 0, est_line_style)
@@ -111,7 +112,9 @@ class plot_6dof:
         self.pitch_est_plt, = self.axes[1,1].plot(0, 0, est_line_style)
         self.yaw_gt_plt, = self.axes[2,1].plot(0, 0, gt_line_style)
         self.yaw_est_plt, = self.axes[2,1].plot(0, 0, est_line_style)
-        plt.show(block=False)
+        # plt.show()
+        # plt.show(block=False)
+
 
     def update_plot(self):
         self.x_gt_plt.set_xdata(self.t_gt)
@@ -154,8 +157,9 @@ class plot_6dof:
         rate = rospy.Rate(30)
 
         while not rospy.is_shutdown():
-            # if len(self.t_est) > 0:
-            #     self.update_plot()
+            if len(self.t_est) > 0:
+                self.update_plot()
+                print(".")
             rate.sleep()
 
 
