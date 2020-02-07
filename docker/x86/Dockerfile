@@ -47,6 +47,7 @@ RUN apt-get update && apt-get install -y \
 # ---------------------------- DEBUG -start ------------------------------ #
 # Install: ping, locate, nano, x11-apps (xclock)
 RUN apt-get update && apt-get install -y \
+        avahi-utils \
         iputils-ping \
         mlocate \
         nano \
@@ -59,7 +60,7 @@ ARG rebuild=0
 # -------------------------------------------------------------------------- #
 
 # Add aliases to bashrc in docker containers
-RUN echo 'alias test_go="roslaunch wf_comparison demo_with_rviz.launch bag_filename:=/bags/cartographer_paper_deutsches_museum.bag"' >> ~/.bashrc
+RUN echo 'alias test_go="python ~/test_ros_ws/src/test_ros_docker/src/docker_test.py"' >> ~/.bashrc
 
 # # Re-pull & Build if ARG rebuild changed
 RUN source /ros_entrypoint.sh && \
