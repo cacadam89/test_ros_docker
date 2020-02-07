@@ -60,7 +60,7 @@ ARG rebuild=0
 # -------------------------------------------------------------------------- #
 
 # Add aliases to bashrc in docker containers
-RUN echo 'alias test_go="python ~/test_ros_ws/src/test_ros_docker/src/docker_test.py"' >> ~/.bashrc
+RUN echo 'alias test_go="source /test_ros_entrypoint.sh && python ~/test_ros_ws/src/test_ros_docker/src/docker_test.py"' >> ~/.bashrc
 
 # # Re-pull & Build if ARG rebuild changed
 RUN source /ros_entrypoint.sh && \
